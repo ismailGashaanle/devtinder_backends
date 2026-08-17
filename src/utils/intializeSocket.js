@@ -14,12 +14,24 @@ const getSecretRoomId=(userId,toTargetUser)=>{
 }
 const intializeSocket=(serverApp)=>{
 
-const io=socket(serverApp,{
-    cors:{
-        origin:"http://localhost:5173",
+// const io=socket(serverApp,{
+//     cors:{
+//         origin:"http://localhost:5173",
 
-    }
-})
+//     }
+// })
+    const io = socket(serverApp, {
+        cors: {
+            origin: process.env.NODE_ENV === 'production' 
+                ? ["https://ismailoday.dev", "https://www.ismailoday.dev"]
+                : "http://localhost:5173",
+            methods: ["GET", "POST"],
+            credentials: true
+        },
+        path: "/api/socket.io",  // ✅ CRITICAL FIX - This MUST match client
+        transports: ['websocket', 'polling'],  // ✅ Better compatibility
+        allowEIO3: true
+    });
 
 
 io.on("connection",(socket)=>{
