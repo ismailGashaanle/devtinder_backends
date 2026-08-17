@@ -8,7 +8,7 @@ const ChatRouter=express.Router();
 
 ChatRouter.get("/chat/:toTargetUser",UserAuth,async(req,res)=>{
 
-    const userId=req?.user
+    const userId=req?.user._id
     const {toTargetUser}=req.params
     try{
         let chat = await Chat.findOne({
