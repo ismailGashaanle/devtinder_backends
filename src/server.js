@@ -19,7 +19,7 @@ const http=require("http");
 const ChatRouter = require("./routes/Chat");
 
 app.use(cors({
-    origin:"http://localhost:5173",
+    origin:"https://ismailoday.dev",
     credentials:true
 }))
 

@@ -26,31 +26,60 @@ io.on("connection",(socket)=>{
 
     socket.on("joinChat",async({firstName,userId,toTargetUser})=>{
         // const roomId=({userId,toTargetUser}).sort().join("_");
-            const connectionRequest = await ConnectionRequest.findOne({
-    status: "confirm",
-    $or: [
-        {
-            fromUserId: userId,
-            toUserId: toTargetUser
-        },
-        {
-            fromUserId: toTargetUser,
-            toUserId: userId
-        }
-    ]
-});
-  
-          
-            if(!connectionRequest){
-            
-               console.log("user have not connected")
-               return ;
-              
-            }
-          const roomId =getSecretRoomId(userId,toTargetUser);
+
+
+        try{
+           // Don't allow chatting with yourself
+                if (String(userId) === String(toTargetUser)) {
+                    console.log(
+                        "Cannot chat with yourself"
+                    );
+                    return;
+                }
+
+
+                // Check whether these TWO users are connected
+                const connectionRequest =
+                    await ConnectionRequest.findOne({
+                        status: "confirm",
+
+                        $or: [
+                            {
+                                fromUserId: userId,
+                                toUserId: toTargetUser
+                            },
+                            {
+                                fromUserId: toTargetUser,
+                                toUserId: userId
+                            }
+                        ]
+                    });
+
+
+                if (!connectionRequest) {
+                    console.log(
+                        "Users are not connected"
+                    );
+
+                    socket.emit("chatError", {
+                        message:
+                            "You can only chat with a connected user."
+                    });
+
+                    return;
+                }
+
+                 const roomId =getSecretRoomId(userId,toTargetUser);
         //   const roomId = [userId, toTargetUser].sort().join("_");
-        console.log(firstName + "joining room " + roomId)
-        socket.join(roomId)
+              console.log(firstName + "joining room " + roomId)
+              socket.join(roomId)
+
+
+        }catch(err){
+          console.log(err)
+        }
+    
+         
 
     })
 
