@@ -146,36 +146,62 @@ UserRouter.get("/feed",UserAuth,async(req,res)=>{
 
 
 
+// UserRouter.get("/user/connection/:userId", UserAuth, async (req, res) => {
+//   try {
+//     const { userId } = req.params;
+
+//     const targetUser = await User.findById(userId).select(Public_Save_Data);
+
+//     if (!targetUser || !targetUser?._id) {
+//       return res.status(404).json({
+//         message: "User not found"
+//       });
+//     }
+//      if (!user) {
+//             return res.status(404).json({  // ← ADDED return
+//                 success: false,
+//                 message: "User not found"
+//             });
+//         }
+
+//     return res.status(200).json({
+//       message: "Target user",
+//       success:true,
+//       data: targetUser
+//     });
+
+//   } catch (err) {
+//     res.status(400).json({
+//       message: "ERROR : " + err.message
+//     });
+//   }
+// });
+
+
+// routes/user.js
 UserRouter.get("/user/connection/:userId", UserAuth, async (req, res) => {
-  try {
-    const { userId } = req.params;
-
-    const targetUser = await User.findById(userId).select(Public_Save_Data);
-
-    if (!targetUser || !targetUser?._id) {
-      return res.status(404).json({
-        message: "User not found"
-      });
-    }
-     if (!user) {
-            return res.status(404).json({  // ← ADDED return
+    try {
+        const { userId } = req.params;
+        const user = await User.findById(userId).select("firstName lastName photo email");
+        
+        if (!user) {
+            return res.status(404).json({
                 success: false,
                 message: "User not found"
             });
         }
 
-    return res.status(200).json({
-      message: "Target user",
-      success:true,
-      data: targetUser
-    });
+        return res.status(200).json({
+            success: true,
+            data: user
+        });
 
-  } catch (err) {
-    res.status(400).json({
-      message: "ERROR : " + err.message
-    });
-  }
+    } catch (err) {
+        return res.status(400).json({
+            success: false,
+            message: err.message
+        });
+    }
 });
-
 
 module.exports=UserRouter
