@@ -35,11 +35,11 @@ app.use(cors({
 
 
 
-app.use("/",AuthRouter)
-app.use("/",profileRouter)
-app.use("/",requestRouter)
-app.use("/",UserRouter)
-app.use("/",ChatRouter)
+app.use("/api",AuthRouter)
+app.use("/api",profileRouter)
+app.use("/api",requestRouter)
+app.use("/api",UserRouter)
+app.use("/api",ChatRouter)
 
 
 
