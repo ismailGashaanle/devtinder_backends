@@ -47,7 +47,7 @@ const UserAuth=async(req,res,next)=>{
         const cookies=req.cookies
         const {token}=cookies
         if(!token){
-             res.status(401).json({
+           return  res.status(401).json({
                 message:"please login"
              })
         }

@@ -17,6 +17,7 @@ profileRouter.get("/profile",UserAuth,async(req,res)=>{
 
 
         const Public_Save_Data={
+            _id:loginUser?._id,
             firstName:loginUser.firstName,
             lastName:loginUser.lastName,
             phone:loginUser.phone,

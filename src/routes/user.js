@@ -143,4 +143,32 @@ UserRouter.get("/feed",UserAuth,async(req,res)=>{
     }
 
 })
+
+
+
+UserRouter.get("/user/connection/:userId", UserAuth, async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const targetUser = await User.findById(userId).select(Public_Save_Data);
+
+    if (!targetUser) {
+      return res.status(404).json({
+        message: "User not found"
+      });
+    }
+
+    res.status(200).json({
+      message: "Target user",
+      data: targetUser
+    });
+
+  } catch (err) {
+    res.status(400).json({
+      message: "ERROR : " + err.message
+    });
+  }
+});
+
+
 module.exports=UserRouter
