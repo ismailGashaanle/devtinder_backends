@@ -35,40 +35,78 @@ const jwt=require("jsonwebtoken")
    
 // }
 
-const UserAuth=async(req,res,next)=>{
-    try{
-        //read token  to read use
-        //destruct token
-        // check token 
-        //decodeddata 
-        //find _Id user
+// const UserAuth=async(req,res,next)=>{
+//     try{
+//         //read token  to read use
+//         //destruct token
+//         // check token 
+//         //decodeddata 
+//         //find _Id user
 
 
-        const cookies=req.cookies
-        const {token}=cookies
-        if(!token){
-           return  res.status(401).json({
-                message:"please login"
-             })
-        }
-        const decodedData=  jwt.verify(token,process.env.SecretKey)
-        const {_id}=decodedData
-        const user= await User.findById(_id)
-         if(!user){
-            throw new Error("user not found")
-         }
+//         const cookies=req.cookies
+//         const {token}=cookies
+//         if(!token){
+//            return  res.status(401).json({
+//                 message:"please login"
+//              })
+//         }
+//         const decodedData=  jwt.verify(token,process.env.SecretKey)
+//         const {_id}=decodedData
+//         const user= await User.findById(_id)
+//          if(!user){
+//             throw new Error("user not found")
+//          }
 
-         req.user=user
-         next();
+//          req.user=user
+//          next();
  
-    }catch(err){
-    return res.status(401).json({
-        message:"ERROR : " + err.message
-    })
-}
+//     }catch(err){
+//     return res.status(401).json({
+//         message:"ERROR : " + err.message
+//     })
+// }
 
-}
+// }
 
+
+// middlewares/auth.js
+const jwt = require("jsonwebtoken");
+const User = require("../models/User");
+
+const UserAuth = async (req, res, next) => {
+    try {
+        const token = req.cookies?.token;
+        
+        if (!token) {
+            return res.status(401).json({  // ← ADDED return
+                success: false,
+                message: "Unauthorized: No token provided"
+            });
+        }
+
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const user = await User.findById(decoded._id);
+        
+        if (!user) {
+            return res.status(401).json({  // ← ADDED return
+                success: false,
+                message: "Unauthorized: User not found"
+            });
+        }
+
+        req.user = user;
+        next();  // ← Only called once when everything is OK
+        
+    } catch (err) {
+        return res.status(401).json({  // ← ADDED return
+            success: false,
+            message: "Unauthorized: Invalid token"
+        });
+    }
+};
+
+// module.exports = { UserAuth };
 
 const AdminAuth=(req,res,next)=>{
     const token = "adminIsmail";

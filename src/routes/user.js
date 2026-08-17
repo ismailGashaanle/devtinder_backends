@@ -152,14 +152,21 @@ UserRouter.get("/user/connection/:userId", UserAuth, async (req, res) => {
 
     const targetUser = await User.findById(userId).select(Public_Save_Data);
 
-    if (!targetUser) {
+    if (!targetUser || !targetUser?._id) {
       return res.status(404).json({
         message: "User not found"
       });
     }
+     if (!user) {
+            return res.status(404).json({  // ← ADDED return
+                success: false,
+                message: "User not found"
+            });
+        }
 
-    res.status(200).json({
+    return res.status(200).json({
       message: "Target user",
+      success:true,
       data: targetUser
     });
 
